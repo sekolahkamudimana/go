@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+  # ========== service hello-world
+  # docker run -it --rm --name service-hello-world-v2 -e PORT=8083 -e MYSQL_CONN_STRING=root@tcp(service-mariadb:3306)/hello_world?parseTime=true -p 8083:8083 --network my-network hello-world-v2
+  service-go:
+    build: ./ 
+    environment:
+      - DB_URL=mongodb://service-mongodb:27017
+      - PORT=8005
+    ports:
+      - 8005:8005
+    networks: 
+      - test1
+    depends_on:
+      - service-mongodb
+  # ========== service mariadb
+  # docker run --name service-mariadb -it -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -v C:/Users/novalagung/Desktop/docker-volume-example:/var/lib/mysql --network my-network mariadb:10.1
+  service-mongodb:
+    image: mongo
+    volumes:
+      - /home/arfiono/mongo:/data/db
+    ports:
+      - 27017:27017
+    networks: 
+      - test1
+
+networks:
+  test1:
